@@ -1,9 +1,11 @@
 ```haskell
-newtype TestSudoku = TS Sudoku
+spec :: Spec
+spec = do
+    describe "solveSudoku" $ do
+        it "should return something" $ property $
+            \(TS s) -> isJust $ solveSudoku s
 
-instance Arbitrary TestSudoku where
-    arbitrary = elements $ map TS sudokus
-
-sudokus :: [Sudoku]
-sudokus = easySudokus ++ mediumSudokus ++ hardSudokus ++ evilSudokus
+        it "should not contain blank values" $ property $
+            \(TS s) -> let solutionStrings = map toString (fromJust $ solveSudoku s)
+                       in and $ map (all (/= blankval)) solutionStrings
 ```
